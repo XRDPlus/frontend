@@ -2,6 +2,7 @@ import React from "react";
 import Bottone from "./Bottone";
 import { ChargingState } from "../App";
 import ElapsedTime from "./ElapsedTime";
+import PoiSuggestor from "./PoiSuggestor";
 
 interface ChargingPageProps {
   onStopCharging: () => void;
@@ -24,6 +25,7 @@ const ChargingPage: React.FC<ChargingPageProps> = ({
         disabled={false}
       />
       <ElapsedTime charging={charging} />
+      <PoiSuggestor></PoiSuggestor>
     </>
   );
 };
