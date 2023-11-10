@@ -67,11 +67,11 @@ const PoiSuggestor: React.FC = () => {
           </>
         ))}
       </GoogleMap>
-      <div>
+      {/* <div>
         {markers.map((marker, index) => (
           <PlaceCard key={index} place={marker} />
         ))}
-      </div>
+      </div> */}
     </>
   ) : (
     <></>
