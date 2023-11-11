@@ -1,19 +1,31 @@
 :root {
   --button-background: #808080;
   --button-hover: #606060;
-  --stop-button-background: #dc3545;
-  --stop-button-hover: #bd2130;
-  --pause-button-background: #007bff;
-  --pause-button-hover: #0056b3;
-  --start-button-background: #28a745; /* Colore verde per il pulsante di avvio */
+  --stop-button-background: #f15152;
+  /* --stop-button-hover: #bd2130; */
+  --pause-button-background: #7f8c8d;
+  /* --pause-button-hover: #0056b3; */
+  --start-button-background: #7a306c; /* Colore verde per il pulsante di avvio */
+  --background-color: #000;
+  --accent-color: #7a306c;
+  --text-color: #fff;
+  --secondary-color: #7f8c8d;
+  --tertiary-color: #f15152;
 }
 
 .App {
   text-align: center;
+  background-color: var(--background-color);
+  height: 100vh;
+}
+
+.App img {
+  width: 50%;
+  margin: auto;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--background-color);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -77,11 +89,35 @@
   align-items: center;
   width: 80%;
   margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  gap: 32px;
+  flex-direction: row;
 }
 
-.left-content,
-.right-content {
+@media (min-width: 768px) {
+  .App {
+    flex-direction: column;
+  }
+}
+
+.left-content {
   flex: 1;
+}
+
+.right-content {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.bottoni {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
 }
 
 .places-of-interest {
@@ -91,6 +127,9 @@
 .place-cards-container {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 
