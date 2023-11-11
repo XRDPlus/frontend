@@ -1,147 +1,140 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import axios from 'axios';
 
-import Bottone from "./components/Bottone";
-import HelpingPage from "./components/HelpingPage";
-import ChargingPage from "./components/ChargingPage";
-// import OtherComponent from "./components/OtherComponent"; // import other components
-import "./App.css";
-import ParkingAbusePage from "./components/ParkingAbusePage";
+interface Place {
+  name: string;
+  description: string;
+}
 
-type ParkingAbuseState = "thermal" | "not-plugged-in" | "none";
-export type ChargingState = "charging" | "not-charging" | "paused";
+function App() {
+  const [isEV, setIsEV] = useState(true);
+  const [placesOfInterest, setPlacesOfInterest] = useState<Place[]>([]);
+  const [chargingCounter, setChargingCounter] = useState<number>(0);
+  const [chargingTimer, setChargingTimer] = useState<number | null>(null);
+  const [chargingStarted, setChargingStarted] = useState<boolean>(false);
 
-export default function App() {
-  const [componentToShow, setComponentToShow] = useState("Bottone");
-  const [carAuthorized, setCarAuthorized] = useState(false);
-  const [paymentAuthorized, setPaymentAuthorized] = useState(false);
-  const [charging, setCharging] = useState<ChargingState>("not-charging");
-  const [parkingAbuse, setParkingAbuse] = useState<ParkingAbuseState>("none");
-
-  const showBottone = () => setComponentToShow("Bottone");
-  const showOtherComponent = () => setComponentToShow("OtherComponent");
-
-  //Event listener for the "A" key, to authorize the car
   useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "A" || event.key === "a") {
-        setCarAuthorized((prevCarAuthorized) => !prevCarAuthorized); // Toggle carAuthorized
-      }
-    };
+    axios.get('http://127.0.0.1:5000/valid/TARGA123')
+      .then(response => {
+        setIsEV(response.data.isEV);
+      })
+      .catch(error => {
+        console.error('Error fetching data from the API:', error);
+      });
 
-    window.addEventListener("keydown", handleKeyPress);
+    // Simulazione di luoghi di interesse (sostituisci con la logica reale)
+    const simulatedPlaces: Place[] = [
+      { name: 'Place 1', description: 'Description 1' },
+      { name: 'Place 2', description: 'Description 2' },
+      // ... altri luoghi di interesse
+    ];
 
-    // Cleanup function to remove the event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, []);
-  //EventListener for the "P" key, to authorize the payment
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "P" || event.key === "p") {
-        setPaymentAuthorized((prevPaymentAuthorized) => !prevPaymentAuthorized); // Toggle paymentAuthorized
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-
-    // Cleanup function to remove the event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
+    setPlacesOfInterest(simulatedPlaces);
   }, []);
 
-  //EventListener for the "B", to signal a parking abuse
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "B" || event.key === "b") {
-        setParkingAbuse("thermal");
-      }
-    };
+  const handleStartCharging = () => {
+    console.log('Charging started!');
 
-    window.addEventListener("keydown", handleKeyPress);
+    // Avvia un intervallo per aumentare il contatore ogni secondo
+    const timer = window.setInterval(() => {
+      setChargingCounter(prevCounter => prevCounter + 1);
+    }, 1000);
 
-    // Cleanup function to remove the event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, []);
+    // Aggiorna lo stato dell'intervallo e che la ricarica è iniziata
+    setChargingTimer(timer);
+    setChargingStarted(true);
+  };
 
-  //EventListener for the "R" key to reset state
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "R" || event.key === "r") {
-        setCarAuthorized(false);
-        setPaymentAuthorized(false);
-        setCharging("not-charging");
-        setParkingAbuse("none");
-      }
-    };
+  const handlePauseCharging = () => {
+    console.log('Charging paused!');
 
-    window.addEventListener("keydown", handleKeyPress);
-
-    // Cleanup function to remove the event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, []);
-
-  useEffect(() => {
-    parkingAbuse === "thermal" || parkingAbuse === "not-plugged-in"
-      ? setCarAuthorized(false)
-      : setCarAuthorized(true);
-  }, [parkingAbuse]);
-
-  useEffect(() => {
-    if (carAuthorized === true) {
-      setParkingAbuse("none");
+    // Interrompi l'intervallo se è attivo
+    if (chargingTimer !== null) {
+      window.clearInterval(chargingTimer);
+      setChargingTimer(null);
     }
-  }, [carAuthorized]);
 
-  function onTogglePause() {
-    charging === "paused" ? setCharging("charging") : setCharging("paused");
-  }
+    // Indica che la ricarica è in pausa
+    setChargingStarted(false);
+  };
 
-  function onStopCharging() {
-    setCharging("not-charging");
-  }
+  const handleStopCharging = () => {
+    console.log('Charging stopped and reset!');
+
+    // Interrompi l'intervallo se è attivo
+    if (chargingTimer !== null) {
+      window.clearInterval(chargingTimer);
+      setChargingTimer(null);
+    }
+
+    // Resetta il contatore
+    setChargingCounter(0);
+
+    // Indica che la ricarica è stata fermata
+    setChargingStarted(false);
+  };
 
   return (
-    <>
-      <div
-        style={
-          {
-            // display: "flex",
-            // flexDirection: "column",
-            // justifyContent: "center",
-            // alignItems: "center",
-            // height: "100vh",
-          }
-        }
-      >
-        Wecolme to ChargeWare
-        {(charging === "charging" || charging === "paused") &&
-          paymentAuthorized === true && (
-            <ChargingPage
-              onTogglePause={onTogglePause}
-              onStopCharging={onStopCharging}
-              charging={charging}
-            ></ChargingPage>
+    <div className="App">
+      <header className="App-header">
+        <div className="content-container">
+          {isEV ? (
+            <div className="left-content">
+              <h1>Welcome to ChargeWare</h1>
+              {!chargingStarted && (
+                <button className="StartChargingButton" onClick={handleStartCharging}>
+                  Start Charging
+                </button>
+              )}
+              {chargingStarted && (
+                <>
+                  <button className="PauseChargingButton" onClick={handlePauseCharging}>
+                    Pause Charging
+                  </button>
+                  <button className="StopChargingButton" onClick={handleStopCharging}>
+                    Stop Charging
+                  </button>
+                </>
+              )}
+              <p>Charging Time: {chargingCounter} seconds</p>
+            </div>
+          ) : (
+            <div className="left-content">
+              <h2>Alert!</h2>
+              <p>You're not an EV, leave the charging spot to someone electric!</p>
+            </div>
           )}
-        {parkingAbuse !== "none" && <ParkingAbusePage />}
-        {carAuthorized === true && paymentAuthorized === false && (
-          <p>Insert credit card</p>
-        )}
-        {carAuthorized === true &&
-          paymentAuthorized === true &&
-          charging === "not-charging" && (
-            <Bottone
-              text="Inizia ricarica"
-              onClick={() => setCharging("charging")}
-            />
-          )}
-      </div>
-    </>
+
+          {/* Google Maps Section */}
+          <div className="right-content">
+            <iframe
+              title="Google Map"
+              width="100%"
+              height="300px"
+              frameBorder="0"
+              style={{ border: 0 }}
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAki2anj1hZDJDjKpUqK2LH2rucIU7gkmw&q=charging+station`}
+              allowFullScreen
+            ></iframe>
+
+            {/* Cards per i luoghi di interesse */}
+            <div className="places-of-interest">
+              <h3>Places of Interest</h3>
+              <div className="place-cards-container">
+                {placesOfInterest.map((place, index) => (
+                  <div key={index} className="place-card">
+                    <h4>{place.name}</h4>
+                    <p>{place.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
   );
 }
+
+export default App;

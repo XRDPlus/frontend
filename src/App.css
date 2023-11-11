@@ -1,16 +1,15 @@
+:root {
+  --button-background: #808080;
+  --button-hover: #606060;
+  --stop-button-background: #dc3545;
+  --stop-button-hover: #bd2130;
+  --pause-button-background: #007bff;
+  --pause-button-hover: #0056b3;
+  --start-button-background: #28a745; /* Colore verde per il pulsante di avvio */
+}
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
 }
 
 .App-header {
@@ -24,15 +23,86 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* Comune a tutti i pulsanti */
+.StartChargingButton,
+.PauseChargingButton,
+.StopChargingButton {
+  color: white;
+  font-size: calc(10px + 2vmin);
+  padding: 15px;
+  margin-top: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Stili specifici per i pulsanti */
+.StartChargingButton {
+  background-color: var(--start-button-background);
+}
+
+.PauseChargingButton {
+  background-color: var(--pause-button-background);
+}
+
+.StopChargingButton {
+  background-color: var(--stop-button-background);
+}
+
+/* Effetto hover comune */
+.StartChargingButton:hover,
+.PauseChargingButton:hover,
+.StopChargingButton:hover {
+  background-color: var(--button-hover);
+}
+
+/* Responsive design per schermi più piccoli */
+@media (max-width: 768px) {
+  .App-header {
+    font-size: calc(8px + 2vmin);
   }
-  to {
-    transform: rotate(360deg);
+
+  .StartChargingButton,
+  .PauseChargingButton,
+  .StopChargingButton {
+    font-size: calc(8px + 2vmin);
   }
+}
+
+/* Aggiungi queste definizioni nel tuo file App.css */
+
+.content-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.left-content,
+.right-content {
+  flex: 1;
+}
+
+.places-of-interest {
+  margin-top: 20px;
+}
+
+.place-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.place-card {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.place-card h4 {
+  margin-bottom: 5px;
 }
