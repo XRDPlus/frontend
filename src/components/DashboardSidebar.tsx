@@ -1,8 +1,14 @@
 // Sidebar.tsx
 import React from "react";
 import "./css/DashboardSidebar.css";
+import { PossibleScreens } from "./DashboardContent";
+import SidebarButtons from "./SidebarButtons";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  handleSidebar: (button: PossibleScreens) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ handleSidebar }) => {
   return (
     <div className="sidebar">
       <img
@@ -10,9 +16,15 @@ const Sidebar: React.FC = () => {
         src="https://i.imgur.com/gAkqQP7.png"
         alt="loading"
       />
-      <button className="sidebar-button">Tutte le stazioni</button>
-      <button className="sidebar-button">Overview</button>
-      <button className="sidebar-button">Lorem ipsum</button>
+      <SidebarButtons
+        buttons={[
+          ["Tutte le ricariche", "tutte"],
+          ["Overview", "overview"],
+          ["Targhe", "targhe"],
+          ["Profili", "profili"],
+        ]}
+        handleSidebar={handleSidebar}
+      />
     </div>
   );
 };
