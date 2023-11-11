@@ -96,7 +96,9 @@ const AppContent: React.FC = () => {
 
     // Avvia un intervallo per aumentare il contatore ogni secondo
     const timer = window.setInterval(() => {
-      setChargingCounter((prevCounter) => prevCounter + 1);
+      setChargingCounter(
+        (prevCounter) => prevCounter + (!chargingPaused ? 1 : 0)
+      );
     }, 1000);
 
     // Aggiorna lo stato dell'intervallo e che la ricarica è iniziata
@@ -106,15 +108,16 @@ const AppContent: React.FC = () => {
 
   const handlePauseCharging = () => {
     console.log("Charging paused!");
+    setChargingPaused((prevPaused) => !prevPaused);
 
-    // Interrompi l'intervallo se è attivo
-    if (chargingTimer !== null) {
-      window.clearInterval(chargingTimer);
-      setChargingTimer(null);
-    }
+    // // Interrompi l'intervallo se è attivo
+    // if (chargingTimer !== null) {
+    //   window.clearInterval(chargingTimer);
+    //   setChargingTimer(null);
+    // }
 
-    // Indica che la ricarica è in pausa
-    setChargingStarted(false);
+    // // Indica che la ricarica è in pausa
+    // setChargingStarted(false);
   };
 
   const handleStopCharging = () => {
@@ -154,6 +157,7 @@ const AppContent: React.FC = () => {
                   handlePauseCharging={handlePauseCharging}
                   handleStopCharging={handleStopCharging}
                   chargingCounter={chargingCounter}
+                  isChargingPaused={chargingPaused}
                 />
               )}
             </div>
