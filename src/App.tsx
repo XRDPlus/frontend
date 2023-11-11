@@ -110,13 +110,15 @@ export default function App() {
   return (
     <>
       <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
+        style={
+          {
+            // display: "flex",
+            // flexDirection: "column",
+            // justifyContent: "center",
+            // alignItems: "center",
+            // height: "100vh",
+          }
+        }
       >
         Wecolme to ChargeWare
         {(charging === "charging" || charging === "paused") &&

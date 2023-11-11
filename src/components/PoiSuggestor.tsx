@@ -2,6 +2,28 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import PlaceCard from "./PlaceCard";
 
+export type UserType = {
+  sex: "male" | "female" | "other";
+  age: number;
+};
+
+interface PoiSuggestorProps {
+  location: string;
+  userType: UserType;
+  timeOfDay: Date;
+}
+
+const placeType = [
+  "bar",
+  "restaurant",
+  "library",
+  "park",
+  "book_store",
+  "meal_takeaway",
+  "shopping_mall",
+  "park",
+];
+
 const containerStyle = {
   width: "400px",
   height: "400px",
@@ -25,27 +47,45 @@ const PoiSuggestor: React.FC = () => {
   const onUnmount = useCallback(function callback(map: google.maps.Map) {
     setMap(null);
   }, []);
-
   useEffect(() => {
+    if (!map || markers.length > 0) {
+      return;
+    }
     if (!map) return;
+    setMarkers([]);
 
     const service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(
-      {
-        location: center,
-        radius: 1500,
-        openNow: true,
-        type: "restaurant",
-        rankBy: google.maps.places.RankBy.PROMINENCE,
-      },
-      (results, status) => {
-        if (status !== "OK") return;
-        if (!results) return;
-        setMarkers(results);
-      }
-    );
-  }, [map]);
 
+    const promises = placeType.map(
+      (type) =>
+        new Promise<google.maps.places.PlaceResult[]>((resolve, reject) => {
+          console.log("searching for type " + type);
+          service.nearbySearch(
+            {
+              location: center,
+              radius: 1500,
+              openNow: true,
+              type: type,
+              rankBy: google.maps.places.RankBy.PROMINENCE,
+            },
+            (results, status) => {
+              if (status !== "OK") {
+                console.log("no results for type " + type);
+                resolve([]);
+              } else {
+                console.log("results for type " + type);
+                resolve(results || []);
+              }
+            }
+          );
+        })
+    );
+
+    Promise.all(promises).then((allResults) => {
+      const allMarkers = allResults.flat();
+      setMarkers(allMarkers);
+    });
+  }, [isLoaded]);
   return isLoaded ? (
     <>
       <GoogleMap
@@ -67,11 +107,11 @@ const PoiSuggestor: React.FC = () => {
           </>
         ))}
       </GoogleMap>
-      {/* <div>
+      <div>
         {markers.map((marker, index) => (
           <PlaceCard key={index} place={marker} />
         ))}
-      </div> */}
+      </div>
     </>
   ) : (
     <></>
